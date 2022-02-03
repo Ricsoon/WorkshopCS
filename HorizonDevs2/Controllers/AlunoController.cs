@@ -1,4 +1,5 @@
-﻿using HorizonDevs2.Models;
+﻿using HorizonDevs2.Data;
+using HorizonDevs2.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,39 +10,22 @@ namespace HorizonDevs2.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        public List<Aluno> Alunos = new List<Aluno>()
-        {
-            new Aluno(){
-                Id = 1,
-                Nome = "Maria",
-                Sobrenome = "Paula",
-                Telefone = "123456789"
-            },
-            new Aluno(){
-                Id = 2,
-                Nome = "Pedro",
-                Sobrenome = "Morais",
-                Telefone = "987654321"
-            },
-            new Aluno(){
-                Id = 3,
-                Nome = "Bob",
-                Sobrenome = "Andrade",
-                Telefone = "4573645835"
-            }
-        };
+        private readonly SmartContext context;
 
-        public AlunoController(){ }
+        public AlunoController(SmartContext context)
+        {
+            this.context = context;
+        }
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(Alunos);
+            return Ok(context.Alunos);
         }
 
         [HttpGet("ById/{id}")]
         public IActionResult GetById(int id)
         {
-            var aluno = Alunos.FirstOrDefault(a => a.Id == id);
+            var aluno = context.Alunos.FirstOrDefault(a => a.Id == id);
             if (aluno == null) return BadRequest("Aluno não encontrado.");
             return Ok(aluno);
         }
@@ -49,7 +33,7 @@ namespace HorizonDevs2.Controllers
         [HttpGet("ByName")]
         public IActionResult GetByName(string nome, string sobrenome)
         {
-            var aluno = Alunos.FirstOrDefault(a => a.Nome.Contains(nome) && a.Sobrenome.Contains(sobrenome));
+            var aluno = context.Alunos.FirstOrDefault(a => a.Nome.Contains(nome) && a.Sobrenome.Contains(sobrenome));
             if (aluno == null) return BadRequest("Aluno não encontrado.");
             return Ok(aluno);
         }

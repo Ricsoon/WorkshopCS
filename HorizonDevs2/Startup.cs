@@ -28,6 +28,9 @@ namespace HorizonDevs2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<SmartContext>(context => context.UseSqlite(Configuration.GetConnectionString("Default")));
+
+            services.AddScoped<IRepository, Repository>();
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

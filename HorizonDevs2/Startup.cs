@@ -31,7 +31,7 @@ namespace HorizonDevs2
 
             services.AddScoped<IRepository, Repository>();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HorizonDevs2", Version = "v1" });

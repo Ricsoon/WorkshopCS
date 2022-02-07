@@ -1,9 +1,6 @@
 ﻿using HorizonDevs2.Data;
 using HorizonDevs2.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace HorizonDevs2.Controllers
 {
@@ -11,32 +8,23 @@ namespace HorizonDevs2.Controllers
     [ApiController]
     public class AlunoController : ControllerBase
     {
-        private readonly SmartContext _context;
         private readonly IRepository _repo;
 
-        public AlunoController(SmartContext context, IRepository repo)
+        public AlunoController(IRepository repo)
         {
-            _context = context;
             _repo = repo;
         }
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_context.Alunos);
+            var result = _repo.GetAllAlunos(true);
+            return Ok(result);
         }
 
-        [HttpGet("ById/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            if (aluno == null) return BadRequest("Aluno não encontrado.");
-            return Ok(aluno);
-        }
-
-        [HttpGet("ByName")]
-        public IActionResult GetByName(string nome, string sobrenome)
-        {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Nome.Contains(nome) && a.Sobrenome.Contains(sobrenome));
+            var aluno = _repo.GetAlunoById(id, false);
             if (aluno == null) return BadRequest("Aluno não encontrado.");
             return Ok(aluno);
         }
@@ -55,7 +43,7 @@ namespace HorizonDevs2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Aluno aluno)
         {
-            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var alu = _repo.GetAlunoById(id);
             if (alu == null) return BadRequest("Aluno não encontrado.");
            
             _repo.Update(aluno);
@@ -69,7 +57,7 @@ namespace HorizonDevs2.Controllers
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Aluno aluno)
         {
-            var alu = _context.Alunos.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var alu = _repo.GetAlunoById(id);
             if (alu == null) return BadRequest("Aluno não encontrado.");
 
             _repo.Update(aluno);
@@ -83,10 +71,10 @@ namespace HorizonDevs2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var aluno = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            if (aluno == null) return BadRequest("Aluno não encontrado.");
+            var alu = _repo.GetAlunoById(id);
+            if (alu == null) return BadRequest("Aluno não encontrado.");
 
-            _repo.Delete(aluno);
+            _repo.Delete(alu);
             if (_repo.SaveChanges())
             {
                 return Ok("Aluno deletado.");

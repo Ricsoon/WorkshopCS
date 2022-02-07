@@ -14,34 +14,26 @@ namespace HorizonDevs2.Controllers
     [ApiController]
     public class ProfessorController : ControllerBase
     {
-        private readonly SmartContext _context;
         private readonly IRepository _repo;
 
-        public ProfessorController(SmartContext context, IRepository repo)
+        public ProfessorController(IRepository repo)
         {
-            _context = context;
             _repo = repo;
         }
 
         [HttpGet]
         public IActionResult Get() {
-            return Ok(_context.Professores);
+            var result = _repo.GetAllProfessores(true);
+            return Ok(result);
+
         }
 
-        [HttpGet("ById/{id}")]
+        [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var professor = _context.Professores.FirstOrDefault(a => a.Id == id);
+            var professor = _repo.GetProfessorById(id, false);
             if (professor == null) return BadRequest("Professor não encontrado.");
             return Ok(professor);
-        }
-
-        [HttpGet("ByName")]
-        public IActionResult GetByName(string nome)
-        {
-            var aluno = _context.Professores.FirstOrDefault(a => a.Nome.Contains(nome));
-            if (aluno == null) return BadRequest("Professor não encontrado.");
-            return Ok(aluno);
         }
 
         [HttpPost]
@@ -58,7 +50,7 @@ namespace HorizonDevs2.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, Professor professor)
         {
-            var prof = _context.Professores.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var prof = _repo.GetProfessorById(id);
             if (prof == null) return BadRequest("Professor não encontrado.");
 
             _repo.Update(professor);
@@ -72,7 +64,7 @@ namespace HorizonDevs2.Controllers
         [HttpPatch("{id}")]
         public IActionResult Patch(int id, Professor professor)
         {
-            var prof = _context.Professores.AsNoTracking().FirstOrDefault(a => a.Id == id);
+            var prof = _repo.GetProfessorById(id);
             if (prof == null) return BadRequest("Professor não encontrado.");
 
             _repo.Update(professor);
@@ -86,10 +78,10 @@ namespace HorizonDevs2.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var professor = _context.Alunos.FirstOrDefault(a => a.Id == id);
-            if (professor == null) return BadRequest("Professor não encontrado.");
+            var prof = _repo.GetProfessorById(id);
+            if (prof == null) return BadRequest("Professor não encontrado.");
 
-            _repo.Delete(professor);
+            _repo.Delete(prof);
             if (_repo.SaveChanges())
             {
                 return Ok("Professor deletado.");

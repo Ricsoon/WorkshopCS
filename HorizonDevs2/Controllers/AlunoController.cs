@@ -89,7 +89,7 @@ namespace HorizonDevs2.Controllers
             _repo.Delete(aluno);
             if (_repo.SaveChanges())
             {
-                return Ok("Aludo deletado.");
+                return Ok("Aluno deletado.");
             }
             return BadRequest("Aluno não foi deletado.");
         }

@@ -1,4 +1,5 @@
 ﻿
+using HorizonDevs2.Models;
 
 namespace HorizonDevs2.Data
 {
@@ -8,5 +9,11 @@ namespace HorizonDevs2.Data
         void Update<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
         bool SaveChanges();
+        Aluno[] GetAllAlunos();
+        Aluno[] GetAllAlunosByDisciplinaId();
+        Aluno GetAlunoById();
+        Professor[] GetAllProfessores();
+        Professor[] GetAllProfessoresByDisciplinaId();
+        Professor GetProfessorById();
     }
 }

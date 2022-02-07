@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace HorizonDevs2.Models
 {
@@ -6,13 +7,22 @@ namespace HorizonDevs2.Models
     {
         public Professor()
         { }
-        public Professor(int Id, string Nome)
+        public Professor(int id, int registro, string nome, string sobrenome)
         {
-            this.Id = Id;
-            this.Nome = Nome;
+            this.Id = id;
+            this.Registro = registro;
+            this.Nome = nome;
+            this.Sobrenome = sobrenome;
         }
         public int Id { get; set; }
+        public int Registro { get; set; }
         public string Nome { get; set; }
+        public string Sobrenome { get; set; }
+        public string Telefone { get; set; }
+        public DateTime DataNasc { get; set; }
+        public DateTime DataInicio { get; set; } = DateTime.Now;
+        public DateTime? DataFim { get; set; } = null;
+        public bool Ativo { get; set; } = true;
         public IEnumerable<Disciplina> Disciplinas { get; set; }
     }
 }

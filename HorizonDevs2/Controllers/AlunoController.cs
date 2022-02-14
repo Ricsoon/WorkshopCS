@@ -1,4 +1,5 @@
-﻿using HorizonDevs2.Data;
+﻿using AutoMapper;
+using HorizonDevs2.Data;
 using HorizonDevs2.Dtos;
 using HorizonDevs2.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -11,32 +12,19 @@ namespace HorizonDevs2.Controllers
     public class AlunoController : ControllerBase
     {
         private readonly IRepository _repo;
+        private readonly IMapper _mapper;
 
-        public AlunoController(IRepository repo)
+        public AlunoController(IRepository repo, IMapper mapper)
         {
             _repo = repo;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public IActionResult Get() {
             var alunos = _repo.GetAllAlunos(true);
-            var alunoResult = new List<AlunoDto>();
 
-            foreach (var aluno in alunos)
-            {
-                alunoResult.Add(new AlunoDto()
-                {
-                    Id = aluno.Id,
-                    Matricula = aluno.Matricula,
-                    Nome = $"{aluno.Nome} {aluno.Sobrenome}",
-                    Telefone = aluno.Telefone,
-                    DataNasc = aluno.DataNasc,
-                    DataInicio = aluno.DataInicio,
-                    Ativo = aluno.Ativo
-                });
-            }
-
-            return Ok(alunoResult);
+            return Ok(_mapper.Map<IEnumerable<AlunoDto>>(alunos));
         }
 
         [HttpGet("{id}")]

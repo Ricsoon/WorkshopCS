@@ -1,6 +1,8 @@
 ﻿using HorizonDevs2.Data;
+using HorizonDevs2.Dtos;
 using HorizonDevs2.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace HorizonDevs2.Controllers
 {
@@ -17,8 +19,24 @@ namespace HorizonDevs2.Controllers
 
         [HttpGet]
         public IActionResult Get() {
-            var result = _repo.GetAllAlunos(true);
-            return Ok(result);
+            var alunos = _repo.GetAllAlunos(true);
+            var alunoResult = new List<AlunoDto>();
+
+            foreach (var aluno in alunos)
+            {
+                alunoResult.Add(new AlunoDto()
+                {
+                    Id = aluno.Id,
+                    Matricula = aluno.Matricula,
+                    Nome = $"{aluno.Nome} {aluno.Sobrenome}",
+                    Telefone = aluno.Telefone,
+                    DataNasc = aluno.DataNasc,
+                    DataInicio = aluno.DataInicio,
+                    Ativo = aluno.Ativo
+                });
+            }
+
+            return Ok(alunoResult);
         }
 
         [HttpGet("{id}")]
